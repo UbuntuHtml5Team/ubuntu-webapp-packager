@@ -134,6 +134,9 @@ module.exports = function (opts) {
   }
 
   opts = opts || {};
+  opts.manifest = opts.manifest || {};
+  opts.apparmor = opts.apparmor || {};
+
   opts = _.defaults(opts, {
     src: Constants.DEFAULT_SOURCE,
     dest: Constants.DEFAULT_DEST,
@@ -149,6 +152,10 @@ module.exports = function (opts) {
       id: Constants.DEFAULT_ID,
       title: Constants.DEFAULT_TITLE,
       version: Constants.DEFAULT_VERSION
+    }),
+    apparmor: _.defaults(opts.apparmor, {
+      policy_version: Constants.DEFAULT_POLICY_VERSION,
+      policy_groups: Constants.DEFAULT_POLICY_GROUPS
     }),
     main_html: Constants.DEFAULT_MAIN_HTML
   });
@@ -168,6 +175,9 @@ module.exports = function (opts) {
 
   // Replace the template in the application desktop file (app.desktop).
   templates.fillApplicationDesktop(dest, opts);
+
+  // Adjust the template in the application apparmor security file (app.apparmor)
+  templates.fillApplicationApparmor(dest, opts);
 
   copyWebAppFiles(src, dest, opts);
 

@@ -1,7 +1,4 @@
 {
-    "policy_groups": [
-        "networking",
-        "webview"
-    ],
-    "policy_version": 1.3
+    "policy_groups": <% POLICY_GROUPS %>,
+    "policy_version": <% POLICY_VERSION %>
 }
