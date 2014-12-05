@@ -1,0 +1,39 @@
+{
+  "name": "ubuntu-webapp-packager",
+  "version": "0.1.0",
+  "main": "index",
+  "bin": {
+    "webapp-packager": "./packager"
+  },
+  "description": "Packager for Web Application on the Ubuntu platform.",
+  "engineStrict": "true",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "colors": "^1.0.3",
+    "lodash": "^2.4.1",
+    "minimist": "^1.1.0",
+    "q": "^1.1.2",
+    "shelljs": "^0.3.0"
+  },
+  "bundledDependencies": [
+    "colors",
+    "optimist",
+    "q",
+    "shelljs"
+  ],
+  "keywords": [
+    "ubuntu",
+    "webapp",
+    "web"
+  ],
+  "author": "Canonical Ltd.",
+  "contributors": [
+    {
+      "name": "Jean-Francois Moy",
+      "email": "jean-francois.moy@canonical.com"
+    }
+  ],
+  "license": "Apache Version 2.0"
+}

@@ -1,0 +1,15 @@
+{
+    "architecture": "all",
+    "description": "<% DESCRIPTION %>",
+    "framework": "<% FRAMEWORK %>",
+    "hooks": {
+        "app": {
+            "apparmor": "app.apparmor",
+            "desktop": "app.desktop"
+        }
+    },
+    "maintainer": "<% MAINTAINER %> <<% MAINTAINER_EMAIL %>>",
+    "name": "<% ID %>",
+    "title": "<% TITLE %>",
+    "version": "<% VERSION %>"
+}

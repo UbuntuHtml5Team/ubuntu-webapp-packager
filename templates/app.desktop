@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=app
+Exec=webapp-container <% FLAGS %> ./www/<% MAIN_HTML %>
+Icon=default.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
+X-Ubuntu-Single-Instance=true
+X-Ubuntu-Default-Department-ID=accessories
