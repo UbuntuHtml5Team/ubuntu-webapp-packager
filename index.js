@@ -158,7 +158,7 @@ module.exports = function (opts) {
     main_html: Constants.DEFAULT_MAIN_HTML
   });
 
-  logger.info('Using configuration: '.white + JSON.stringify(opts));
+  logger.info('Using configuration: '.white + JSON.stringify(opts, null, 4));
 
   if (!opts.src || typeof opts.src !== "string") {
     logger.fatal('Invalid or missing source directory.');
