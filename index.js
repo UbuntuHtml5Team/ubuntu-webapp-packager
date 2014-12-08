@@ -138,8 +138,6 @@ module.exports = function (opts) {
   opts.apparmor = opts.apparmor || {};
 
   opts = _.defaults(opts, {
-    src: Constants.DEFAULT_SOURCE,
-    dest: Constants.DEFAULT_DEST,
     validate: true,
     install: true,
     server: false,
@@ -161,6 +159,12 @@ module.exports = function (opts) {
   });
 
   logger.info('Using configuration: '.white + JSON.stringify(opts));
+
+  if (!opts.src || typeof opts.src !== "string") {
+    logger.fatal('Invalid or missing source directory.');
+  } else if (!opts.dest || typeof opts.dest !== "string") {
+    logger.fatal('Invalid or missing destination directory');
+  }
 
   var src = path.join(cwd, opts.src);
   var dest = path.join(cwd, opts.dest);
