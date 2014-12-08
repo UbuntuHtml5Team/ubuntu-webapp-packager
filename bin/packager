@@ -18,11 +18,5 @@
  * under the License.
  *
 */
-var path = require('path');
-var args = process.argv;
-
-var packager = require('./index');
-
-packager({
- // Arguments will be parsed and set here.
-});
+var argv = require('minimist')(process.argv.slice(2));
+require('../lib/cli').run(argv);

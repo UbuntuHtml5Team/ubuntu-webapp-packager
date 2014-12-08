@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "index",
   "bin": {
-    "webapp-packager": "./packager"
+    "webapp-packager": "./bin/packager"
   },
   "description": "Packager for Web Application on the Ubuntu platform.",
   "engineStrict": "true",
