@@ -26,11 +26,12 @@ var shell = require('shelljs');
 var cwd = process.cwd();
 require('colors');
 
+var checkRequirements = require('./lib/check_reqs');
 var Constants = require('./lib/constants');
 var Devices = require('./lib/device');
-var checkRequirements = require('./lib/check_reqs');
 var logger = require('./lib/logger');
 var templates = require('./lib/templates');
+var Utils = require('./lib/utils');
 
 function createDestinationFolders(dest) {
   logger.info('Creating necessary folders for building...');
@@ -73,7 +74,7 @@ function buildClickPackage(dest, opts) {
 
   shell.pushd(dest);
   var flags = (!opts.validate) ? ' --no-validate' : '';
-  var result = shell.exec('click build .' + flags);
+  var result = Utils.execSync('click build .' + flags, {silent: false});
   if (result.code !== 0) {
     logger.fatal('Failed to build click package: ' +  result.output);
   }
@@ -114,10 +115,11 @@ function deployClickPackage(dest, opts) {
   logger.info('Installing the application on your device.');
   Devices.adbExec(target, 'shell "cd /home/phablet/; pkcon install-local ' + names[0] + ' -p --allow-untrusted -y"', {silent: false});
 
-  // if (debug) {
-  //   logger.warn('Debug enabled. Try pointing a WebKit browser to http://127.0.0.1:9222');
-  //   Devices.adbExec(target, 'forward tcp:9222 tcp:9222');
-  // }
+  if (opts.inspector) {
+    var port = !!(opts.inspector_port) ? opts.inspector_port : '9221';
+    logger.warn('Inspector enabled. Try pointing a WebKit browser to http://127.0.0.1:' + port);
+    Devices.adbExec(target, 'forward tcp:' + port + ' tcp:' + port);
+  }
 
   logger.info('Launching the application on your device.');
 
@@ -141,7 +143,8 @@ module.exports = function (opts) {
     validate: true,
     install: true,
     server: false,
-    inspector: true,
+    inspector: false,
+    verbose: false,
     manifest: _.defaults(opts.manifest, {
       description: Constants.DEFAULT_DESC,
       framework: Constants.DEFAULT_FRAMEWORK,
@@ -157,6 +160,10 @@ module.exports = function (opts) {
     }),
     main_html: Constants.DEFAULT_MAIN_HTML
   });
+
+  if (opts.verbose) {
+    require('./lib/config').verboseMode();
+  }
 
   logger.info('Using configuration: '.white + JSON.stringify(opts, null, 4));
 

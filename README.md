@@ -8,10 +8,14 @@ imported (through Gulp for example).
 
 When using the Command Line Interface, a configuration file (written in JSON) must be provided. The correct syntax is the following:
 
-packager -s *source directory* -d *destination directory* *configuration file*
+packager *configuration file \<options\>*
 
-The configuration file is mandatory and must be provided. It must be a correct JSON file following the format described below. The source directory and destination directory should
-be provided if the properties are absent from the configuration file. If they are specified in both the configuration and as an argument, the argument value will be used.
+The configuration file is mandatory and must be provided. It must be a correct JSON file following the format described below. Additional options can also be passed:
+
+- *--source*: Source directory that contains the web application files to be packaged (overrides the one defined in the configuration)
+- *--dest*: Destination directory where the generated click package will be saved (overrides the one defined in the configuration)
+- *--inspector*: Enable the remote inspector, a port can be specified using *--inspector (port number)*, 9221 is used by default.
+- *--verbose*: Enable the verbose mode providing additional logs when running the packager.
 
 # Configuration File
 
@@ -34,8 +38,10 @@ The configuration file is a simple JSON file with the following properties:
   - *policy_version*: Version of the policy to be used, default: 1.3
   - *policy_groups*: Policy groups used by the application, default: ["networking"]
 - *inspector*: Boolean specifying whether or not the web inspector should be enabled when running the web application on the device.
+- *inspector_port*: An integer specifying the port the inspector should run on (default: 9221).
 - *validate*: Boolean specifying whether the generated click package should be validated.
 - *install*: Boolean specifying whether the generated click package should be deployed and installed on the connected device.
+- *verbose*: Boolean enabling the verbose mode providing additional logs when running the packager.
 
 ## Example
 
