@@ -31,7 +31,7 @@ The configuration file is a simple JSON file with the following properties:
   - *maintainer*: The maintainer name, default: Ubuntu Developer
   - *maintainer_email*: The maintainer email, default: ubuntu@developer.com
   - *id*: The application unique identifier, default: com.example.com.untitled
-  - *title*: The application title, default: Untitled
+  - *title*: The application title, will be displayed on the phone homescreen default: Untitled
   - *version*: The version of the application
   - *framework*: The Ubuntu framework to be used, default: ubuntu-sdk-14.10-dev2
 - *apparmor*: Object that contains information about the security of the application.
