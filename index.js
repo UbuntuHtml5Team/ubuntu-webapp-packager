@@ -20,7 +20,6 @@
 */
 
 var _ = require('lodash');
-var fs = require('fs');
 var path = require('path');
 var shell = require('shelljs');
 var cwd = process.cwd();
@@ -133,6 +132,13 @@ function deployClickPackage(dest, opts) {
 module.exports = function (opts) {
   if (!checkRequirements()) {
     logger.fatal('Error: missing dependency.');
+  } else if (!arguments.length === 0) {
+    logger.fatal('Error: please provide a configuration path, or configuration object');
+  }
+
+  // If we are given a string, we check if the file pointed by the path is a configuration.
+  if (typeof opts === "string") {
+    opts = Utils.readJSONFile(opts);
   }
 
   opts = opts || {};
