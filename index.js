@@ -138,7 +138,7 @@ module.exports = function (opts) {
 
   // If we are given a string, we check if the file pointed by the path is a configuration.
   if (typeof opts === "string") {
-    opts = Utils.readJSONFile(opts);
+    opts = Utils.readJSONFile(path.join(cwd, opts));
   }
 
   opts = opts || {};
