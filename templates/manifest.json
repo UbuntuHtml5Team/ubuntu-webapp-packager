@@ -3,7 +3,7 @@
     "description": "<% DESCRIPTION %>",
     "framework": "<% FRAMEWORK %>",
     "hooks": {
-        "app": {
+        "<% TITLE %>": {
             "apparmor": "app.apparmor",
             "desktop": "app.desktop"
         }
