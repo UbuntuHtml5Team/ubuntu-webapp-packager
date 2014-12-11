@@ -42,12 +42,12 @@ function createDestinationFolders(dest) {
     logger.fatal('Destination is not a directory: ' + dest);
   }
 
-  shell.pushd(dest);
+  Utils.pushd(dest);
   if (shell.ls().length > 0) {
     shell.rm('-rf', '*');
   }
   shell.mkdir(path.join(dest, 'www'));
-  shell.popd();
+  Utils.popd();
 }
 
 function copyWebAppFiles(src, dest, opts) {
@@ -71,26 +71,28 @@ function copyWebAppFiles(src, dest, opts) {
 function buildClickPackage(dest, opts) {
   logger.info('Building Click package...');
 
-  shell.pushd(dest);
-  var flags = (!opts.validate) ? ' --no-validate' : '';
-  var result = Utils.execSync('click build .' + flags, {silent: false});
-  if (result.code !== 0) {
-    logger.fatal('Failed to build click package: ' +  result.output);
-  }
-  shell.popd();
+  Utils.pushd(dest);
+
+  // Validation is done through click-run-checks
+  Utils.execSync('click build . --no-validate');
+
+  Utils.popd();
 }
 
-function deployClickPackage(dest, opts) {
-  var devices = Devices.list();
-  if (!devices.length) {
-    logger.fatal('Could not detect a connected device.');
+function validateClickPackage(dest, opts) {
+  var clickPath = findClickPackagePath(dest, opts);
+
+  Utils.pushd(dest);
+
+  var result = Utils.execSync('click-run-checks ' + clickPath, {ignore_result: true});
+  if (result.code !== 0) {
+    logger.warn(result.output);
   }
 
-  var target = devices[0];
-  if (devices.length > 1) {
-    logger.warn('Multiple targets found, you can specify target with --target <device id>');
-  }
+  Utils.popd();
+}
 
+function findClickPackagePath(dest, opts) {
   var appId = opts.manifest.id;
   var names = shell.ls(dest);
   names = _.filter(names, function (name) {
@@ -103,16 +105,32 @@ function deployClickPackage(dest, opts) {
     logger.warn('Multiple click found in ' + dest + ', using: ' + names[0]);
   }
 
+  return names[0];
+}
+
+function deployClickPackage(dest, opts) {
+  var devices = Devices.list();
+  if (!devices.length) {
+    logger.fatal('Could not detect a connected device.');
+  }
+
+  var target = devices[0];
+  if (devices.length > 1) {
+    logger.warn('Multiple targets found, you can specify target with --target <device id>, using ' + target);
+  }
+
+  var clickPath = findClickPackagePath(dest, opts);
+
   // logger.info('Killing application if already running on your device.');
   // Devices.adbExec(target, 'shell "ps -A -eo pid,cmd | grep cordova-ubuntu | awk \'{ print \\$1 }\' | xargs kill -9"');
 
-  shell.pushd(dest);
+  Utils.pushd(dest);
 
   logger.info('Deploying the application on your device.');
-  Devices.adbExec(target, 'push ' + names[0] + ' /home/phablet');
+  Devices.adbExec(target, 'push ' + clickPath + ' /home/phablet');
 
   logger.info('Installing the application on your device.');
-  Devices.adbExec(target, 'shell "cd /home/phablet/; pkcon install-local ' + names[0] + ' -p --allow-untrusted -y"', {silent: false});
+  Devices.adbExec(target, 'shell "cd /home/phablet/; pkcon install-local ' + clickPath + ' -p --allow-untrusted -y"', {silent: false});
 
   if (opts.inspector) {
     var port = !!(opts.inspector_port) ? opts.inspector_port : '9221';
@@ -126,7 +144,7 @@ function deployClickPackage(dest, opts) {
 
   logger.rainbow('All done. Have fun!');
 
-  shell.popd();
+  Utils.popd();
 }
 
 module.exports = function (opts) {
@@ -199,6 +217,11 @@ module.exports = function (opts) {
   copyWebAppFiles(src, dest, opts);
 
   buildClickPackage(dest, opts);
+
+  if (opts.validate) {
+    validateClickPackage(dest, opts);
+  }
+
   if (opts.install) {
     deployClickPackage(dest, opts);
   }
