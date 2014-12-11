@@ -77,3 +77,10 @@ packager({
   }
 });
 ```
+
+Alternatively, you can provide the path to a JSON configuration file.
+
+```javascript
+var packager = require('ubuntu-webapp-packager');
+packager('ubuntu-packager.json');
+```
