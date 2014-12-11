@@ -80,13 +80,39 @@ function buildClickPackage(dest, opts) {
 }
 
 function validateClickPackage(dest, opts) {
+  logger.info('Validating click package');
+
   var clickPath = findClickPackagePath(dest, opts);
 
   Utils.pushd(dest);
 
   var result = Utils.execSync('click-run-checks ' + clickPath, {ignore_result: true});
   if (result.code !== 0) {
-    logger.warn(result.output);
+    var lines = result.output.split('\n');
+    var jsons = [];
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].indexOf('= click-check-') === 0) {
+        var nextLine;
+        var jsonBlock = [];
+        while ((nextLine = lines[++i]) && nextLine !== '') {
+          jsonBlock.push(nextLine);
+        }
+        jsons.push(jsonBlock.join('\n'));
+      }
+    }
+
+    var output = '';
+    // Parse each json block and look for errors
+    for (var i = jsons.length - 1; i >= 0; i--) {
+      var json = JSON.parse(jsons[i]);
+      if (Object.getOwnPropertyNames(json.error).length > 0) {
+        output += JSON.stringify(json.error, null, 4) + '\n';
+      }
+    }
+
+    if (output.length) {
+      logger.warn('Errors have been found: \n' + output + 'These errors might prevent the application from running.');
+    }
   }
 
   Utils.popd();
@@ -120,6 +146,7 @@ function deployClickPackage(dest, opts) {
   }
 
   var clickPath = findClickPackagePath(dest, opts);
+  var appId = opts.manifest.id;
 
   // logger.info('Killing application if already running on your device.');
   // Devices.adbExec(target, 'shell "ps -A -eo pid,cmd | grep cordova-ubuntu | awk \'{ print \\$1 }\' | xargs kill -9"');
