@@ -1,6 +1,6 @@
 {
   "name": "ubuntu-webapp-packager",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "index",
   "bin": {
     "ubuntu-webapp-packager": "./bin/packager"
@@ -33,7 +33,15 @@
     {
       "name": "Jean-Francois Moy",
       "email": "jean-francois.moy@canonical.com"
+    },
+    {
+      "name": "Alexandre Abreu",
+      "email": "alexandre.abreu@canonical.com"
     }
   ],
-  "license": "Apache Version 2.0"
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/UbuntuHtml5Team/ubuntu-webapp-packager.git"
+  },
+  "license": "GPL-2.0+"
 }
